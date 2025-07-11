@@ -379,6 +379,22 @@ importers:
         version: 5.8.3
 
   runtimes/napi-bridge:
+    optionalDependencies:
+      '@rizome/next-rc-native-darwin-arm64':
+        specifier: 0.1.1
+        version: 0.1.1
+      '@rizome/next-rc-native-darwin-x64':
+        specifier: 0.1.1
+        version: 0.1.1
+      '@rizome/next-rc-native-linux-arm64-gnu':
+        specifier: 0.1.1
+        version: 0.1.1
+      '@rizome/next-rc-native-linux-x64-gnu':
+        specifier: 0.1.1
+        version: 0.1.1
+      '@rizome/next-rc-native-win32-x64-msvc':
+        specifier: 0.1.1
+        version: 0.1.1
     devDependencies:
       '@napi-rs/cli':
         specifier: ^2.14.0
@@ -968,6 +984,36 @@ packages:
 
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
+
+  '@rizome/next-rc-native-darwin-arm64@0.1.1':
+    resolution: {integrity: sha512-jcgEbGjtQ44a4janOXvfSnpSMJooRrAvpOC/JftpZSQiJfFnXvDTr0xbM6MUk0kbu544oOMeL44yA201vRTCEg==}
+    engines: {node: '>= 18.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@rizome/next-rc-native-darwin-x64@0.1.1':
+    resolution: {integrity: sha512-RABlSQ1Af7Ehhf7pbWV1xaCZT2IYh3odDhlIbpWqeGgPp3Lb7x7pKvQWD62aH63rYk9UxVUgeSoUaI04I3aw4w==}
+    engines: {node: '>= 18.0.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@rizome/next-rc-native-linux-arm64-gnu@0.1.1':
+    resolution: {integrity: sha512-SFFQyvYPp+Cni/6d40XEDF7+1X2vmAEzT1fiZqnPWcLiv8O5etuBhrtpnExd4aV5gOWHPsFFbtklM7BwEcH0wA==}
+    engines: {node: '>= 18.0.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@rizome/next-rc-native-linux-x64-gnu@0.1.1':
+    resolution: {integrity: sha512-ljqm1nTn865ERt6ZpMZMRE0Mbe5usgNi52vB44TRds5VCjFy3kCRGNYurLU/10ZMCn5WX0pCddvDM4rwsoXSgA==}
+    engines: {node: '>= 18.0.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@rizome/next-rc-native-win32-x64-msvc@0.1.1':
+    resolution: {integrity: sha512-vI9iMBKK+XdgpBflPy2XUyARId3Bm2QKmENz7t9PPB/uZHee6Kjkoc6V4pjD9WSszhb4iQE4VM0skfADRobIUw==}
+    engines: {node: '>= 18.0.0'}
+    cpu: [x64]
+    os: [win32]
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -3588,6 +3634,21 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.0': {}
+
+  '@rizome/next-rc-native-darwin-arm64@0.1.1':
+    optional: true
+
+  '@rizome/next-rc-native-darwin-x64@0.1.1':
+    optional: true
+
+  '@rizome/next-rc-native-linux-arm64-gnu@0.1.1':
+    optional: true
+
+  '@rizome/next-rc-native-linux-x64-gnu@0.1.1':
+    optional: true
+
+  '@rizome/next-rc-native-win32-x64-msvc@0.1.1':
+    optional: true
 
   '@sinclair/typebox@0.27.8': {}
 
