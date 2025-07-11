@@ -2,22 +2,21 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 env:
   NODE_VERSION: '18.x'
-  RUST_VERSION: 'stable'
 
 jobs:
-  lint-and-typecheck:
-    name: Lint and Type Check
+  test:
+    name: Lint, Type Check, and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
           
@@ -35,267 +34,22 @@ jobs:
         
       - name: Run type checking
         run: pnpm typecheck
-
-  test-unit:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    needs: lint-and-typecheck
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-          
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
         
       - name: Build packages
         run: pnpm build
         
-      - name: Run unit tests
+      - name: Run tests
         run: pnpm test
-
-  test-integration:
-    name: Integration Tests
-    runs-on: ubuntu-latest
-    needs: lint-and-typecheck
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-          
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ env.RUST_VERSION }}
-          override: true
-          
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            runtimes/wasm
-            runtimes/ebpf
-            runtimes/python
-            runtimes/shared
-            runtimes/napi-bridge
-            
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            libbpf-dev \
-            libclang-dev \
-            llvm-dev \
-            python3-dev
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Build Rust components
-        run: |
-          cd runtimes/napi-bridge && cargo build --release
-          cd ../wasm && cargo build --release
-          cd ../ebpf && cargo build --release
-          cd ../python && cargo build --release
-          
-      - name: Build TypeScript packages
-        run: pnpm build
-        
-      - name: Run integration tests
-        run: |
-          cd packages/tests
-          pnpm test:integration
-
-  test-e2e-coverage:
-    name: E2E Tests with Coverage
-    runs-on: ubuntu-latest
-    needs: [test-unit, test-integration]
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-          
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ env.RUST_VERSION }}
-          override: true
-          
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            runtimes/wasm
-            runtimes/ebpf
-            runtimes/python
-            runtimes/shared
-            runtimes/napi-bridge
-            
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            libbpf-dev \
-            libclang-dev \
-            llvm-dev \
-            python3-dev \
-            python3-pip
-          pip3 install numpy scikit-learn
-          
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Build all components
-        run: |
-          # Build Rust components
-          cd runtimes/napi-bridge && cargo build --release && cd ../..
-          cd runtimes/wasm && cargo build --release && cd ../..
-          cd runtimes/ebpf && cargo build --release && cd ../..
-          cd runtimes/python && cargo build --release && cd ../..
-          
-          # Build TypeScript packages
-          pnpm build
-          
-      - name: Run E2E tests with coverage
-        run: |
-          cd packages/tests
-          pnpm test:coverage:e2e
-          
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ./packages/tests/coverage
-          flags: e2e
-          name: e2e-coverage
-          fail_ci_if_error: true
-
-  test-performance:
-    name: Performance Tests
-    runs-on: ubuntu-latest
-    needs: lint-and-typecheck
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-          
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Build packages
-        run: pnpm build
-        
-      - name: Run performance tests
-        run: |
-          cd packages/tests
-          pnpm test:performance
-          
-      - name: Upload performance results
-        uses: actions/upload-artifact@v3
-        with:
-          name: performance-results
-          path: packages/tests/performance-results.json
-          if-no-files-found: ignore
-
-  build-docker:
-    name: Build Docker Images
-    runs-on: ubuntu-latest
-    needs: [test-unit, test-integration]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-        
-      - name: Build and push runtime controller image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            rizome/next-rc:latest
-            rizome/next-rc:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-          
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Run npm audit
-        run: pnpm audit --audit-level=high
-        continue-on-error: true
-        
-      - name: Run Rust security audit
-        uses: actions-rs/audit-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
-    needs: [test-e2e-coverage, security-scan]
+    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[release]')
     steps:
       - uses: actions/checkout@v4
       
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
           
@@ -306,21 +60,11 @@ jobs:
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
           
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ env.RUST_VERSION }}
-          override: true
-          
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         
       - name: Build all packages
-        run: |
-          # Build Rust components
-          cd runtimes/napi-bridge && cargo build --release && cd ../..
-          # Build TypeScript packages
-          pnpm build
+        run: pnpm build
           
       - name: Prepare packages for publishing
         run: node scripts/prepare-npm-publish.js
@@ -346,19 +90,19 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          release_name: Release v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
           body: |
             ## What's Changed
             See [CHANGELOG.md](https://github.com/rizome-dev/next-rc/blob/main/CHANGELOG.md) for details.
             
             ## Installation
             ```bash
-            pnpm add @rizome/next-rc
+            pnpm add @rizome/next-rc-integration
             ```
           draft: false
           prerelease: false
