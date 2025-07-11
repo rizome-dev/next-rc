@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@rizome/next-rc-types": "workspace:*",
-    "isolated-vm": "^6.0.0",
     "p-queue": "^7.4.1",
     "uuid": "^9.0.1"
+  },
+  "optionalDependencies": {
+    "isolated-vm": "^5.0.4"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
