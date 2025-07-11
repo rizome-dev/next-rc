@@ -69,12 +69,5 @@
   "homepage": "https://github.com/rizome-dev/next-rc",
   "bugs": {
     "url": "https://github.com/rizome-dev/next-rc/issues"
-  },
-  "optionalDependencies": {
-    "@rizome/next-rc-native-win32-x64-msvc": "0.1.1",
-    "@rizome/next-rc-native-darwin-x64": "0.1.1",
-    "@rizome/next-rc-native-linux-x64-gnu": "0.1.1",
-    "@rizome/next-rc-native-darwin-arm64": "0.1.1",
-    "@rizome/next-rc-native-linux-arm64-gnu": "0.1.1"
   }
 }

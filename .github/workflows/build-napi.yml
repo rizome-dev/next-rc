@@ -127,21 +127,48 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      - name: Move artifacts
+      - name: Move artifacts to platform directories
         run: |
           cd runtimes/napi-bridge
-          for dir in ../../artifacts/bindings-*/; do
-            if [ -d "$dir" ]; then
-              cp "$dir"/*.node . || true
+          # Copy binaries to their platform-specific npm directories
+          for artifact in ../../artifacts/bindings-*/; do
+            if [ -d "$artifact" ]; then
+              platform=$(basename "$artifact" | sed 's/bindings-//')
+              case $platform in
+                "x86_64-pc-windows-msvc")
+                  cp "$artifact"/*.node npm/win32-x64-msvc/ || true
+                  ;;
+                "x86_64-apple-darwin")
+                  cp "$artifact"/*.node npm/darwin-x64/ || true
+                  ;;
+                "aarch64-apple-darwin")
+                  cp "$artifact"/*.node npm/darwin-arm64/ || true
+                  ;;
+                "x86_64-unknown-linux-gnu")
+                  cp "$artifact"/*.node npm/linux-x64-gnu/ || true
+                  ;;
+                "aarch64-unknown-linux-gnu")
+                  cp "$artifact"/*.node npm/linux-arm64-gnu/ || true
+                  ;;
+              esac
             fi
           done
-          ls -la *.node
-      - name: List packages
-        run: ls -la runtimes/napi-bridge/npm
-        continue-on-error: true
-      - name: Publish
+          ls -la npm/*/*.node
+      - name: Publish platform packages
         run: |
           cd runtimes/napi-bridge
+          # Publish each platform package
+          for platform_dir in npm/*/; do
+            if [ -d "$platform_dir" ] && [ -f "$platform_dir/package.json" ]; then
+              echo "Publishing $(basename $platform_dir)..."
+              (cd "$platform_dir" && npm publish --access public) || echo "Failed to publish $(basename $platform_dir)"
+            fi
+          done
+      - name: Publish main package
+        run: |
+          cd runtimes/napi-bridge
+          # Copy all binaries to root for backward compatibility
+          cp npm/*/*.node . || true
           npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

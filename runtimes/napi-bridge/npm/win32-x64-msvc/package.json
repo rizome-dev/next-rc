@@ -1,0 +1,45 @@
+{
+  "name": "@rizome/next-rc-native-win32-x64-msvc",
+  "version": "0.1.1",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "next-rc-napi.win32-x64-msvc.node",
+  "files": [
+    "next-rc-napi.win32-x64-msvc.node"
+  ],
+  "description": "Native Rust runtime bridge for Next.js Runtime Controller",
+  "keywords": [
+    "napi-rs",
+    "NAPI",
+    "N-API",
+    "Rust",
+    "node-addon",
+    "node-addon-api",
+    "runtime",
+    "wasm",
+    "ebpf",
+    "python"
+  ],
+  "author": "Samuel Joseph Troyer <sam@rizome.dev>",
+  "homepage": "https://github.com/rizome-dev/next-rc",
+  "license": "MIT OR Apache-2.0",
+  "engines": {
+    "node": ">= 18.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizome-dev/next-rc.git",
+    "directory": "runtimes/napi-bridge"
+  },
+  "bugs": {
+    "url": "https://github.com/rizome-dev/next-rc/issues"
+  }
+}
