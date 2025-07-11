@@ -59,7 +59,7 @@ export class ProcessIsolationManager extends EventEmitter {
     });
 
     // Pre-spawn minimum processes for each cordon
-    for (const [_trustLevel, pool] of this.cordons) {
+    for (const pool of this.cordons.values()) {
       this.ensureMinimumProcesses(pool);
     }
   }
