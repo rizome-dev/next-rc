@@ -14,11 +14,11 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@rizome/next-rc-types": "^0.1.0",
-    "@rizome/next-rc-v8": "^0.1.0",
-    "@rizome/next-rc-wasm": "^0.1.0",
-    "@rizome/next-rc-ebpf": "^0.1.0",
-    "@rizome/next-rc-python": "^0.1.0",
+    "@rizome/next-rc-types": "workspace:*",
+    "@rizome/next-rc-v8": "workspace:*",
+    "@rizome/next-rc-wasm": "workspace:*",
+    "@rizome/next-rc-ebpf": "workspace:*",
+    "@rizome/next-rc-python": "workspace:*",
     "p-queue": "^7.4.1",
     "uuid": "^9.0.1"
   },

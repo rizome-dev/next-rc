@@ -67,13 +67,25 @@ jobs:
         run: pnpm build
           
       - name: Prepare packages for publishing
-        run: node scripts/prepare-npm-publish.js
+        run: |
+          # Convert workspace refs to version numbers for NPM
+          node scripts/prepare-for-publish.js
+          # Add metadata (already done by prepare-for-publish)
         
       - name: Publish packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm publish -r --access public --no-git-checks
+          # Publish in the correct order
+          cd packages/types && npm publish --access public
+          cd ../.. && cd runtimes/napi-bridge && npm publish --access public
+          cd ../.. && cd packages/v8-runtime && npm publish --access public
+          cd ../.. && cd packages/wasm-runtime && npm publish --access public
+          cd ../.. && cd packages/ebpf-runtime && npm publish --access public
+          cd ../.. && cd packages/python-runtime && npm publish --access public
+          cd ../.. && cd packages/lattice && npm publish --access public
+          cd ../.. && cd packages/core && npm publish --access public
+          cd ../.. && cd packages/next-integration && npm publish --access public
 
   create-release:
     name: Create GitHub Release

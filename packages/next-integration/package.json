@@ -14,9 +14,9 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@rizome/next-rc-core": "^0.1.0",
-    "@rizome/next-rc-types": "^0.1.0",
-    "@rizome/next-rc-lattice": "^0.1.0",
+    "@rizome/next-rc-core": "workspace:*",
+    "@rizome/next-rc-types": "workspace:*",
+    "@rizome/next-rc-lattice": "workspace:*",
     "next": "^14.0.0",
     "uuid": "^9.0.1"
   },

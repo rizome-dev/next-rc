@@ -14,8 +14,8 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@rizome/next-rc-types": "^0.1.0",
-    "@rizome/next-rc-native": "^0.1.0"
+    "@rizome/next-rc-types": "workspace:*",
+    "@rizome/next-rc-native": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
