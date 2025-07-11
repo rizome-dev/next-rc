@@ -1,0 +1,57 @@
+{
+  "name": "@rizome/next-rc-wasm",
+  "version": "0.1.0",
+  "description": "WASM runtime for Next.js Runtime Controller",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist lib build .next coverage *.tsbuildinfo",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@rizome/next-rc-types": "^0.1.0",
+    "@rizome/next-rc-native": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.0",
+    "eslint": "^8.50.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizome-dev/next-rc.git",
+    "directory": "packages/wasm-runtime"
+  },
+  "author": "Samuel Joseph Troyer <sam@rizome.dev>",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/rizome-dev/next-rc",
+  "bugs": {
+    "url": "https://github.com/rizome-dev/next-rc/issues"
+  },
+  "keywords": [
+    "webassembly",
+    "wasm",
+    "runtime",
+    "sandboxing"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

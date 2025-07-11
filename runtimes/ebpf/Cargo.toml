@@ -1,0 +1,36 @@
+[package]
+name = "next-rc-ebpf"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+next-rc-shared = { path = "../shared" }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+bytes = { workspace = true }
+libc = { workspace = true }
+memmap2 = { workspace = true }
+parking_lot = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+
+# eBPF specific dependencies
+rbpf = "0.2"  # Rust eBPF interpreter/JIT
+goblin = "0.7"  # ELF parsing
+
+[build-dependencies]
+cc = "1.0"
+
+[dev-dependencies]
+criterion = "0.5"
+tempfile = "3.8"
+
+[[bench]]
+name = "ebpf_bench"
+harness = false

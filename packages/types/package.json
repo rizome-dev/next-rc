@@ -1,0 +1,45 @@
+{
+  "name": "@rizome/next-rc-types",
+  "version": "0.1.0",
+  "description": "Shared types for Next.js Runtime Controller",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist lib build .next coverage *.tsbuildinfo",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizome-dev/next-rc.git",
+    "directory": "packages/types"
+  },
+  "author": "Samuel Joseph Troyer <sam@rizome.dev>",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/rizome-dev/next-rc",
+  "bugs": {
+    "url": "https://github.com/rizome-dev/next-rc/issues"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "runtime",
+    "execution"
+  ],
+  "files": [
+    "dist",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

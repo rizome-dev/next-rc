@@ -1,0 +1,52 @@
+{
+  "name": "@rizome/next-rc-python",
+  "version": "0.1.0",
+  "description": "Python runtime for next-rc (V8-based simulation)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@rizome/next-rc-types": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.8.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizome-dev/next-rc.git",
+    "directory": "packages/python-runtime"
+  },
+  "author": "Samuel Joseph Troyer <sam@rizome.dev>",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/rizome-dev/next-rc",
+  "bugs": {
+    "url": "https://github.com/rizome-dev/next-rc/issues"
+  },
+  "keywords": [
+    "python",
+    "runtime",
+    "sandboxing"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

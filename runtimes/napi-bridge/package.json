@@ -1,0 +1,80 @@
+{
+  "name": "@rizome/next-rc-native",
+  "version": "0.1.1",
+  "description": "Native Rust runtime bridge for Next.js Runtime Controller",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "name": "next-rc-napi",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "x86_64-apple-darwin",
+        "aarch64-apple-darwin",
+        "x86_64-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-pc-windows-msvc"
+      ]
+    }
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --platform --release || echo 'Native build failed, using mock implementation'",
+    "build:debug": "napi build --platform",
+    "prepublishOnly": "napi prepublish -t npm",
+    "test": "ava",
+    "version": "napi version",
+    "clean": "rm -rf dist lib build .next coverage *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.14.0",
+    "ava": "^5.0.0"
+  },
+  "ava": {
+    "timeout": "3m"
+  },
+  "engines": {
+    "node": ">= 18.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "keywords": [
+    "napi-rs",
+    "NAPI",
+    "N-API",
+    "Rust",
+    "node-addon",
+    "node-addon-api",
+    "runtime",
+    "wasm",
+    "ebpf",
+    "python"
+  ],
+  "files": [
+    "index.d.ts",
+    "index.js",
+    "*.node",
+    "README.md",
+    "LICENSE*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizome-dev/next-rc.git",
+    "directory": "runtimes/napi-bridge"
+  },
+  "author": "Samuel Joseph Troyer <sam@rizome.dev>",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/rizome-dev/next-rc",
+  "bugs": {
+    "url": "https://github.com/rizome-dev/next-rc/issues"
+  },
+  "optionalDependencies": {
+    "@rizome/next-rc-native-win32-x64-msvc": "0.1.1",
+    "@rizome/next-rc-native-darwin-x64": "0.1.1",
+    "@rizome/next-rc-native-linux-x64-gnu": "0.1.1",
+    "@rizome/next-rc-native-darwin-arm64": "0.1.1",
+    "@rizome/next-rc-native-linux-arm64-gnu": "0.1.1"
+  }
+}

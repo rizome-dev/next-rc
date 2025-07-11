@@ -1,0 +1,27 @@
+{
+  "name": "@rizome/next-rc-benchmarks",
+  "version": "0.1.0",
+  "description": "Benchmarking suite for Next.js Runtime Controller",
+  "private": true,
+  "scripts": {
+    "benchmark": "tsx docker-benchmark.ts",
+    "benchmark:smolagents": "tsx smolagents-benchmark.ts",
+    "benchmark:all": "npm run benchmark && npm run benchmark:smolagents"
+  },
+  "dependencies": {
+    "@rizome/next-rc-core": "workspace:*",
+    "@rizome/next-rc-types": "workspace:*",
+    "dockerode": "^4.0.2",
+    "cli-table3": "^0.6.3",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.23",
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

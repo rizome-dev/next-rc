@@ -1,0 +1,37 @@
+{
+  "name": "@rizome/next-rc-tests",
+  "version": "0.1.0",
+  "description": "Comprehensive test suite for Next.js Runtime Controller",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:integration": "jest --testMatch='**/*.integration.test.ts'",
+    "test:performance": "jest --testMatch='**/*.perf.test.ts'",
+    "test:e2e": "jest --testMatch='**/*.e2e.test.ts' --runInBand",
+    "test:coverage": "jest --coverage",
+    "test:coverage:e2e": "jest --coverage --testMatch='**/*.e2e.test.ts' --runInBand",
+    "test:watch": "jest --watch",
+    "clean": "rm -rf dist lib build .next coverage *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@rizome/next-rc-core": "workspace:*",
+    "@rizome/next-rc-types": "workspace:*",
+    "@rizome/next-rc-v8": "workspace:*",
+    "@rizome/next-rc-wasm": "workspace:*",
+    "@rizome/next-rc-ebpf": "workspace:*",
+    "@rizome/next-rc-lattice": "workspace:*",
+    "@rizome/next-rc-integration": "workspace:*",
+    "@rizome/next-rc-native": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.10.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

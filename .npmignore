@@ -1,0 +1,75 @@
+# Development files
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+__tests__
+__mocks__
+coverage
+.nyc_output
+
+# Source files (if publishing compiled only)
+src/
+*.ts
+!*.d.ts
+
+# Config files
+tsconfig.json
+jest.config.js
+.eslintrc*
+.prettierrc*
+
+# Build artifacts
+*.tsbuildinfo
+*.log
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation source
+docs/
+*.md
+!README.md
+
+# Examples
+examples/
+
+# Scripts
+scripts/
+
+# Rust source (for packages with Rust)
+Cargo.toml
+Cargo.lock
+target/
+benches/
+tests/
+.cargo/
+
+# Misc
+.env*
+.gitignore
+.npmignore
+yarn.lock
+pnpm-lock.yaml
+
+# Paper/Documentation
+paper.tex
+paper.md
+compile-paper.md
+Makefile
+*.aux
+*.log
+*.out
+*.pdf

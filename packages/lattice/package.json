@@ -1,0 +1,63 @@
+{
+  "name": "@rizome/next-rc-lattice",
+  "version": "0.1.0",
+  "description": "NATS-based lattice network for distributed runtime orchestration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist lib build .next coverage *.tsbuildinfo",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@rizome/next-rc-types": "^0.1.0",
+    "nats": "^2.17.0",
+    "p-queue": "^7.4.1",
+    "uuid": "^9.0.1",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.50.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizome-dev/next-rc.git",
+    "directory": "packages/lattice"
+  },
+  "author": "Samuel Joseph Troyer <sam@rizome.dev>",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/rizome-dev/next-rc",
+  "bugs": {
+    "url": "https://github.com/rizome-dev/next-rc/issues"
+  },
+  "keywords": [
+    "distributed",
+    "nats",
+    "mesh",
+    "orchestration"
+  ],
+  "files": [
+    "dist",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,42 @@
+[package]
+name = "next-rc-napi"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+default = ["wasm", "ebpf"]
+wasm = ["dep:wasm-runtime"]
+ebpf = ["dep:next-rc-ebpf"]
+python = ["dep:python-runtime"]
+
+[dependencies]
+# NAPI for Node.js integration
+napi = { version = "2.16", features = ["napi8", "async", "serde-json"] }
+napi-derive = "2.16"
+
+# Our runtime implementations
+wasm-runtime = { path = "../wasm", optional = true }
+next-rc-ebpf = { path = "../ebpf", optional = true }
+python-runtime = { path = "../python", default-features = false, features = ["pyo3", "security"], optional = true }
+next-rc-shared = { path = "../shared" }
+
+# Common dependencies
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+tracing = "0.1"
+
+# Performance
+parking_lot = "0.12"
+
+# Additional
+tracing-subscriber = "0.3"
+
+[build-dependencies]
+napi-build = "2.1.3"
