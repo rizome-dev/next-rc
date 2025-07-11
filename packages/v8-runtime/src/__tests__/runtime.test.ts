@@ -3,9 +3,7 @@ import { V8IsolatePool } from '../isolate-pool';
 import {
   Language,
   ExecutionConfig,
-  Permissions,
   TrustLevel,
-  Capability,
 } from '@rizome/next-rc-types';
 
 describe('V8Runtime', () => {
@@ -259,7 +257,7 @@ describe('V8Runtime', () => {
 
       // Measure instantiation time
       const startTime = Date.now();
-      const instanceId = await runtime.instantiate(moduleId);
+      await runtime.instantiate(moduleId);
       const instantiationTime = Date.now() - startTime;
 
       console.log(`Instantiation time: ${instantiationTime}ms`);
