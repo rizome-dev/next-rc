@@ -1,5 +1,5 @@
 import { RuntimeController } from '../runtime-controller';
-import { Language, TrustLevel, RuntimeType } from '@rizome/next-rc-types';
+import { Language, TrustLevel, RuntimeType, Capability } from '@rizome/next-rc-types';
 
 describe('Runtime Integration Tests', () => {
   let controller: RuntimeController;
@@ -11,6 +11,7 @@ describe('Runtime Integration Tests', () => {
         v8: { enabled: true },
         wasm: { enabled: true },
         ebpf: { enabled: true },
+        python: { enabled: true },
       },
       concurrency: 10,
     });
@@ -40,7 +41,7 @@ describe('Runtime Integration Tests', () => {
           timeout: 5000,
           memoryLimit: 64 * 1024 * 1024, // 64MB
           permissions: {
-            capabilities: new Set(['cpu_intensive']),
+            capabilities: new Set([Capability.CpuIntensive]),
             trustLevel: TrustLevel.High,
           },
         }
@@ -70,7 +71,7 @@ describe('Runtime Integration Tests', () => {
           timeout: 5000,
           memoryLimit: 32 * 1024 * 1024, // 32MB
           permissions: {
-            capabilities: new Set(['cpu_intensive']),
+            capabilities: new Set([Capability.CpuIntensive]),
             trustLevel: TrustLevel.Medium,
           },
         },
@@ -99,9 +100,9 @@ describe('Runtime Integration Tests', () => {
         Language.C,
         {
           timeout: 1000,
-          memoryLimit: 1024 * 1024, // 1MB
+          memoryLimit: 512 * 1024, // 512KB - eBPF max memory
           permissions: {
-            capabilities: new Set(['network_access']),
+            capabilities: new Set([Capability.NetworkAccess]),
             trustLevel: TrustLevel.Low,
           },
         },
@@ -134,15 +135,15 @@ describe('Runtime Integration Tests', () => {
           timeout: 10000,
           memoryLimit: 128 * 1024 * 1024, // 128MB
           permissions: {
-            capabilities: new Set(['cpu_intensive']),
+            capabilities: new Set([Capability.CpuIntensive]),
             trustLevel: TrustLevel.High,
           },
         }
       );
 
       expect(result.success).toBe(true);
-      // Python could be executed in WASM or V8 depending on scheduling
-      expect([RuntimeType.Wasm, RuntimeType.V8Isolate]).toContain(result.runtime);
+      // Python could be executed in Python, WASM or V8 runtime depending on scheduling
+      expect([RuntimeType.Python, RuntimeType.Wasm, RuntimeType.V8Isolate]).toContain(result.runtime);
       expect(result.output).toBe(15);
     });
   });
@@ -157,7 +158,7 @@ describe('Runtime Integration Tests', () => {
         Language.C,
         {
           timeout: 1000,
-          memoryLimit: 1024 * 1024,
+          memoryLimit: 512 * 1024, // 512KB - eBPF max memory
           permissions: {
             capabilities: new Set(),
             trustLevel: TrustLevel.Low,
@@ -212,7 +213,7 @@ describe('Runtime Integration Tests', () => {
           timeout: 10000,
           memoryLimit: 128 * 1024 * 1024,
           permissions: {
-            capabilities: new Set(['cpu_intensive']),
+            capabilities: new Set([Capability.CpuIntensive]),
             trustLevel: TrustLevel.High,
           },
         },

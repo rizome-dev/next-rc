@@ -59,13 +59,21 @@ export class RuntimeSelector {
       return historicalDecision;
     }
 
+    // Prioritize ultra-low latency requirements
+    if (task.latencyRequirement === 'ultra-low') {
+      const latencyDecision = this.selectByLatency(task);
+      if (latencyDecision) {
+        return latencyDecision;
+      }
+    }
+
     // Profile-based selection
     const profileDecision = this.selectByProfile(profile, task);
     if (profileDecision) {
       return profileDecision;
     }
 
-    // Latency-based selection
+    // Latency-based selection for other latency requirements
     const latencyDecision = this.selectByLatency(task);
     if (latencyDecision) {
       return latencyDecision;

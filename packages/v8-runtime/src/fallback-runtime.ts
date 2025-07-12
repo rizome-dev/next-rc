@@ -123,7 +123,7 @@ export class FallbackV8Runtime implements Runtime {
 
       return {
         success: true,
-        output: result !== undefined ? [result] : undefined,
+        output: result !== undefined ? result : undefined,
         executionTime,
         memoryUsed
       };

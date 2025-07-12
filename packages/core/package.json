@@ -19,7 +19,7 @@
     "@rizome/next-rc-wasm": "workspace:*",
     "@rizome/next-rc-ebpf": "workspace:*",
     "@rizome/next-rc-python": "workspace:*",
-    "p-queue": "^7.4.1",
+    "p-queue": "^6.6.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

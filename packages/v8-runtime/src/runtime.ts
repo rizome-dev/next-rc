@@ -142,6 +142,20 @@ export class V8Runtime implements Runtime {
       // Set up security constraints
       this.applySecurityConstraints(instance, config);
 
+      // Get the module for this instance
+      const module = this.modules.get(instance.moduleId);
+      if (!module) {
+        throw new RuntimeError(
+          `Module not found for instance: ${instance.moduleId}`,
+          'MODULE_NOT_FOUND'
+        );
+      }
+
+      // Check if code has a simple pattern of function definition + call
+      const codeLines = module.code.trim().split('\n');
+      const lastLine = codeLines[codeLines.length - 1].trim();
+      const hasSimplePattern = lastLine.match(/^[a-zA-Z_]\w*\s*\([^)]*\)\s*;?\s*$/);
+      
       // Create execution wrapper
       const executionScript = `
         (async function() {
@@ -150,12 +164,21 @@ export class V8Runtime implements Runtime {
           let error;
           
           try {
-            if (typeof main === 'function') {
-              result = await main();
-            } else if (typeof exports === 'object' && typeof exports.handler === 'function') {
-              result = await exports.handler();
-            } else {
-              throw new Error('No entry point found (main or exports.handler)');
+            ${hasSimplePattern ? 
+              // If it's a simple pattern, modify to return the last expression
+              `${codeLines.slice(0, -1).join('\n')}
+               result = ${lastLine.replace(/;$/, '')};` :
+              // Otherwise use the original code
+              `${module.code}
+               
+               // Check for entry points
+               if (typeof main === 'function') {
+                 result = await main();
+               } else if (typeof exports === 'object' && typeof exports.handler === 'function') {
+                 result = await exports.handler();
+               } else {
+                 throw new Error('No entry point found (main or exports.handler)');
+               }`
             }
           } catch (e) {
             error = {
@@ -194,9 +217,15 @@ export class V8Runtime implements Runtime {
         };
       }
 
+      // Unwrap single-element arrays (common pattern for simple expressions)
+      let output = executionResult.result;
+      if (Array.isArray(output) && output.length === 1) {
+        output = output[0];
+      }
+
       return {
         success: true,
-        output: executionResult.result,
+        output,
         executionTime,
         memoryUsed,
       };

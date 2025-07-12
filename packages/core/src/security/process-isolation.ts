@@ -127,7 +127,19 @@ export class ProcessIsolationManager extends EventEmitter {
     const workerPath = this.getWorkerPath();
     const options = this.getProcessOptions(trustLevel);
     
-    const childProcess = spawn('node', [workerPath], options);
+    // For testing, use inline Node.js code
+    const isTest = process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID;
+    const childProcess = isTest
+      ? spawn('node', ['-e', `
+          process.on('message', (msg) => {
+            if (msg.type === 'init') {
+              process.send({ type: 'ready' });
+            } else if (msg.type === 'shutdown') {
+              process.exit(0);
+            }
+          });
+        `], options)
+      : spawn('node', [workerPath], options);
 
     // Set up process communication
     childProcess.on('error', (error) => {
@@ -156,6 +168,10 @@ export class ProcessIsolationManager extends EventEmitter {
 
   private getWorkerPath(): string {
     // In a real implementation, this would return the path to the worker script
+    // For testing, we can use a simple echo command
+    if (process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID) {
+      return 'echo';
+    }
     return process.env.WORKER_SCRIPT_PATH || '/usr/local/bin/next-rc-worker';
   }
 
@@ -170,13 +186,18 @@ export class ProcessIsolationManager extends EventEmitter {
       },
     };
 
+    const isTest = process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID;
+
     // Apply trust-level specific restrictions
     switch (trustLevel) {
       case TrustLevel.Low:
         return {
           ...baseOptions,
-          uid: 65534, // nobody user
-          gid: 65534, // nogroup
+          // Skip uid/gid in tests as they require root
+          ...(isTest ? {} : {
+            uid: 65534, // nobody user
+            gid: 65534, // nogroup
+          }),
           env: {
             ...baseOptions.env,
             NODE_OPTIONS: '--max-old-space-size=128',

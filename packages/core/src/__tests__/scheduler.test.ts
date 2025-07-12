@@ -1,7 +1,7 @@
 import { IntelligentScheduler, Task } from '../scheduler/intelligent-scheduler';
 import { WorkloadProfiler, WorkloadProfile } from '../scheduler/workload-profiler';
 import { RuntimeSelector } from '../scheduler/runtime-selector';
-import { RuntimeType, Language, TrustLevel } from '@rizome/next-rc-types';
+import { RuntimeType, Language, TrustLevel, Capability } from '@rizome/next-rc-types';
 
 describe('WorkloadProfiler', () => {
   let profiler: WorkloadProfiler;
@@ -226,7 +226,7 @@ describe('IntelligentScheduler', () => {
       timeout: 1000,
       memoryLimit: 128 * 1024 * 1024,
       permissions: {
-        capabilities: new Set(),
+        capabilities: new Set<Capability>(),
         trustLevel: TrustLevel.Low,
       },
     };
@@ -252,7 +252,7 @@ describe('IntelligentScheduler', () => {
       timeout: 1000,
       memoryLimit: 128 * 1024 * 1024,
       permissions: {
-        capabilities: new Set(),
+        capabilities: new Set<Capability>(),
         trustLevel: TrustLevel.Low,
       },
     };

@@ -13,7 +13,7 @@ import {
   initializeRuntimeController 
 } from '@rizome/next-rc-native';
 
-export class EbpfRuntime implements Runtime {
+class EbpfRuntime implements Runtime {
   private bridge: EbpfRuntimeBridge;
   private initialized = false;
 
@@ -40,12 +40,19 @@ export class EbpfRuntime implements Runtime {
     }
   }
 
-  async compile(_code: string, _language: Language): Promise<ModuleId> {
+  async compile(code: string, language: Language): Promise<ModuleId> {
     await this.ensureInitialized();
     
-    // eBPF doesn't have a compile step - programs are loaded directly
-    // Return a temporary module ID that represents the code
-    return { id: `ebpf-module-${Date.now()}` };
+    try {
+      // Use the bridge's compile method
+      const result = await this.bridge.compile(code, this.mapLanguage(language));
+      return { id: result.id };
+    } catch (error) {
+      throw new RuntimeError(
+        `eBPF compilation failed: ${error}`,
+        'COMPILATION_FAILED'
+      );
+    }
   }
 
   async instantiate(moduleId: ModuleId): Promise<InstanceId> {
@@ -203,14 +210,34 @@ export class EbpfRuntime implements Runtime {
   }
 
 
-  private mapTrustLevel(trustLevel: string): any {
+  private mapLanguage(language: Language): number {
+    // Map TypeScript string enum values to Rust numeric enum values
+    switch (language) {
+      case Language.Rust: return 0;
+      case Language.JavaScript: return 1;
+      case Language.TypeScript: return 2;
+      case Language.Python: return 3;
+      case Language.Go: return 4;
+      case Language.C: return 5;
+      case Language.Cpp: return 6;
+      case Language.Wasm: return 7;
+      default: 
+        throw new RuntimeError(
+          `Unsupported language for eBPF: ${language}`,
+          'UNSUPPORTED_LANGUAGE'
+        );
+    }
+  }
+
+  private mapTrustLevel(trustLevel: string): number {
     switch (trustLevel) {
-      case 'low': return 'Low';
-      case 'medium': return 'Medium';
-      case 'high': return 'High';
-      default: return 'Medium';
+      case 'low': return 0;    // TrustLevel.Low
+      case 'medium': return 1; // TrustLevel.Medium
+      case 'high': return 2;   // TrustLevel.High
+      default: return 1;       // Default to Medium
     }
   }
 }
 
+export { EbpfRuntime };
 export { EbpfRuntime as default };

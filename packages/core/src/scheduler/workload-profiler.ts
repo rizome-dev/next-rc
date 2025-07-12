@@ -21,12 +21,7 @@ export class WorkloadProfiler {
       return WorkloadProfile.ShortCompute;
     }
 
-    // Language-based profiling
-    if (task.language === Language.JavaScript || task.language === Language.TypeScript) {
-      return WorkloadProfile.JavaScript;
-    }
-
-    // Analyze code characteristics
+    // Analyze code characteristics first
     const codeAnalysis = this.analyzeCode(task.code, task.language);
     
     // Check for filters
@@ -55,6 +50,11 @@ export class WorkloadProfiler {
     // Default based on expected duration
     if (task.expectedDuration && task.expectedDuration < 1) {
       return WorkloadProfile.ShortCompute;
+    }
+
+    // Language-based default for JavaScript/TypeScript
+    if (task.language === Language.JavaScript || task.language === Language.TypeScript) {
+      return WorkloadProfile.JavaScript;
     }
 
     // Conservative default
@@ -120,29 +120,37 @@ export class WorkloadProfiler {
     const ioPatterns = [
       /fetch|axios|request|http/,
       /readfile|writefile|fs\./,
-      /database|query|sql/,
+      /database|db\.|query|sql/,
       /socket|websocket/,
       /stream|pipe/,
+      /await\s+.*\.(get|post|put|delete|find|save|update)/,
     ];
 
     return ioPatterns.some(p => p.test(code));
   }
 
   private detectComplexLoops(code: string): boolean {
-    // Simple heuristic: nested loops or loops with complex conditions
+    // Detect nested loops or loops with complex conditions
     const nestedLoopPattern = /(for|while)[^{]*{[^}]*(for|while)/;
     const recursionPattern = /function\s+(\w+)[^{]*{[^}]*\1\s*\(/;
+    const matrixPattern = /matrix|multiply|dot\s*product/i;
+    const tripleNestedPattern = /(for|while)[^{]*{[^}]*(for|while)[^{]*{[^}]*(for|while)/;
     
-    return nestedLoopPattern.test(code) || recursionPattern.test(code);
+    return nestedLoopPattern.test(code) || 
+           recursionPattern.test(code) || 
+           matrixPattern.test(code) ||
+           tripleNestedPattern.test(code);
   }
 
   private detectMemoryIntensive(code: string): boolean {
     const memoryPatterns = [
-      /new\s+Array\s*\(\s*\d{6,}/,  // Large arrays
+      /new\s+Array\s*\(\s*\d{5,}/,  // Arrays with 10000+ elements
+      /\[\s*\d{5,}\s*\]/,  // Array literal with large size
       /\.push\s*\(/g,  // Multiple push operations
       /buffer|blob|arraybuffer/,
       /image|video|audio/,
       /matrix|tensor/,
+      /1e6|1000000/,  // Large numbers (million+)
     ];
 
     const pushCount = (code.match(/\.push\s*\(/g) || []).length;

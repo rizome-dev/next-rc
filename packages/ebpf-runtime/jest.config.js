@@ -1,15 +1,19 @@
+/** @type {import('jest').Config} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
-    '!src/**/__tests__/**',
+    '!src/**/*.test.ts',
     '!src/index.ts',
   ],
   coverageThreshold: {
@@ -20,11 +24,4 @@ module.exports = {
       statements: 80,
     },
   },
-  moduleNameMapper: {
-    '^@rizome/next-rc-types$': '<rootDir>/../types/src',
-    '^@rizome/next-rc-v8$': '<rootDir>/../v8-runtime/src',
-  },
-  transformIgnorePatterns: [
-    'node_modules/(?!(p-queue|eventemitter3)/)',
-  ],
 };

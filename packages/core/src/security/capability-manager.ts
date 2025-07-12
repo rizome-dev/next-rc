@@ -261,10 +261,7 @@ export class CapabilityManager {
     granted: boolean,
     context: any
   ): void {
-    const policy = this.policies.get(capability);
-    if (!policy?.requiresAudit && granted) {
-      return; // Skip audit for non-critical successful checks
-    }
+    // Always record checks for metrics, but respect requiresAudit for logging
 
     const check: CapabilityCheck = {
       capability,

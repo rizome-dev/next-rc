@@ -176,27 +176,31 @@ export class WasmRuntime implements Runtime {
     }
   }
 
-  private mapLanguage(language: Language): any {
-    // Map TypeScript enum to NAPI enum
+  private mapLanguage(language: Language): number {
+    // Map TypeScript string enum values to Rust numeric enum values
     switch (language) {
-      case Language.Rust: return 'Rust';
-      case Language.JavaScript: return 'JavaScript';
-      case Language.TypeScript: return 'TypeScript';
-      case Language.Python: return 'Python';
-      case Language.Go: return 'Go';
-      case Language.C: return 'C';
-      case Language.Cpp: return 'Cpp';
-      case Language.Wasm: return 'Wasm';
-      default: return 'Wasm';
+      case Language.Rust: return 0;
+      case Language.JavaScript: return 1;
+      case Language.TypeScript: return 2;
+      case Language.Python: return 3;
+      case Language.Go: return 4;
+      case Language.C: return 5;
+      case Language.Cpp: return 6;
+      case Language.Wasm: return 7;
+      default: 
+        throw new RuntimeError(
+          `Unsupported language: ${language}`,
+          'UNSUPPORTED_LANGUAGE'
+        );
     }
   }
 
-  private mapTrustLevel(trustLevel: string): any {
+  private mapTrustLevel(trustLevel: string): number {
     switch (trustLevel) {
-      case 'low': return 'Low';
-      case 'medium': return 'Medium';
-      case 'high': return 'High';
-      default: return 'Medium';
+      case 'low': return 0;    // TrustLevel.Low
+      case 'medium': return 1; // TrustLevel.Medium
+      case 'high': return 2;   // TrustLevel.High
+      default: return 1;       // Default to Medium
     }
   }
 }
