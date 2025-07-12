@@ -60,6 +60,12 @@ describe('Runtime Integration Tests', () => {
             local.get $b
             i32.add
           )
+          (func $_start (result i32)
+            i32.const 10
+            i32.const 20
+            call $add
+          )
+          (export "_start" (func $_start))
           (export "add" (func $add))
         )
       `;
@@ -84,6 +90,7 @@ describe('Runtime Integration Tests', () => {
 
       expect(result.success).toBe(true);
       expect(result.runtime).toBe(RuntimeType.Wasm);
+      expect(result.output).toBeDefined();
       expect(result.executionTime).toBeLessThan(100); // Should be under 100ms
     });
 

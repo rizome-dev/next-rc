@@ -1,6 +1,6 @@
 {
   "name": "@rizome/next-rc-native",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Native Rust runtime bridge for Next.js Runtime Controller",
   "main": "index.js",
   "types": "index.d.ts",
@@ -71,10 +71,10 @@
     "url": "https://github.com/rizome-dev/next-rc/issues"
   },
   "optionalDependencies": {
-    "@rizome/next-rc-native-win32-x64-msvc": "0.1.1",
-    "@rizome/next-rc-native-darwin-x64": "0.1.1",
-    "@rizome/next-rc-native-linux-x64-gnu": "0.1.1",
-    "@rizome/next-rc-native-darwin-arm64": "0.1.1",
-    "@rizome/next-rc-native-linux-arm64-gnu": "0.1.1"
+    "@rizome/next-rc-native-win32-x64-msvc": "0.1.2",
+    "@rizome/next-rc-native-darwin-x64": "0.1.2",
+    "@rizome/next-rc-native-linux-x64-gnu": "0.1.2",
+    "@rizome/next-rc-native-darwin-arm64": "0.1.2",
+    "@rizome/next-rc-native-linux-arm64-gnu": "0.1.2"
   }
 }

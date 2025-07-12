@@ -88,7 +88,7 @@ export class WasmRuntime implements Runtime {
       
       return {
         success: result.success,
-        output: result.output ? JSON.parse(result.output) : undefined,
+        output: result.output ? this.parseOutput(result.output) : undefined,
         error: result.error || undefined,
         executionTime: result.executionTimeMs,
         memoryUsed: result.memoryUsedBytes,
@@ -201,6 +201,21 @@ export class WasmRuntime implements Runtime {
       case 'medium': return 1; // TrustLevel.Medium
       case 'high': return 2;   // TrustLevel.High
       default: return 1;       // Default to Medium
+    }
+  }
+
+  private parseOutput(output: string): any {
+    try {
+      // Try to parse as JSON first
+      return JSON.parse(output);
+    } catch {
+      // If not JSON, try to parse as number
+      const num = Number(output);
+      if (!isNaN(num)) {
+        return num;
+      }
+      // Otherwise return as string
+      return output;
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@rizome/next-rc-lattice",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "NATS-based lattice network for distributed runtime orchestration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

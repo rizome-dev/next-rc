@@ -46,16 +46,13 @@ impl JitCompiler {
         // Add helper functions
         self.register_helpers(&mut vm)?;
         
-        // JIT compile the bytecode
-        vm.jit_compile()
-            .map_err(|e| anyhow!("JIT compilation failed: {}", e))?;
-        
-        // Drop the VM since we only needed it for verification
+        // Skip JIT compilation to avoid platform-specific issues
+        // The program will run in interpreted mode which is more stable
         drop(vm);
         
         let program = Arc::new(JitProgram {
             bytecode: bytecode_owned,
-            is_jit_compiled: true,
+            is_jit_compiled: false, // Disable JIT to avoid SIGBUS
         });
         
         // Cache the compiled program
@@ -77,24 +74,31 @@ impl JitCompiler {
         // Register helpers
         self.register_helpers(&mut vm)?;
         
-        // JIT compile if needed
-        if program.is_jit_compiled {
-            vm.jit_compile()
-                .map_err(|e| anyhow!("JIT compilation failed: {}", e))?;
-        }
+        // Skip JIT compilation - use interpreted mode for stability
         
-        // Create mutable copies of the data
+        // Create mutable copies of the data with proper alignment
         // mem is the program's memory (empty for packet filters)
         let mut mem = vec![0u8; 0];
-        // mbuff is the packet data
-        let mut mbuff = data.to_vec();
+        // mbuff is the packet data - ensure it has some minimum size to avoid edge cases
+        let mut mbuff = if data.is_empty() {
+            vec![0u8; 64] // Minimum buffer size
+        } else {
+            // Create a properly aligned buffer
+            let mut aligned_buffer = Vec::with_capacity(data.len() + 8);
+            aligned_buffer.extend_from_slice(data);
+            // Pad to 8-byte alignment if needed
+            while aligned_buffer.len() % 8 != 0 {
+                aligned_buffer.push(0);
+            }
+            aligned_buffer
+        };
         
         // Execute the program
         let result = if program.is_jit_compiled {
-            unsafe {
-                vm.execute_program_jit(&mut mem, &mut mbuff)
-                    .map_err(|e| anyhow!("eBPF JIT execution failed: {}", e))?
-            }
+            // Use interpreted mode to avoid SIGBUS issues with JIT
+            // JIT compilation on some platforms can have alignment issues
+            vm.execute_program(&mut mem, &mbuff)
+                .map_err(|e| anyhow!("eBPF execution failed: {}", e))?
         } else {
             vm.execute_program(&mut mem, &mbuff)
                 .map_err(|e| anyhow!("eBPF execution failed: {}", e))?

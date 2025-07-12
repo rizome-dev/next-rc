@@ -127,14 +127,10 @@ impl InstanceManager {
         
         let result = if let Some(entry_func) = instance_guard.entry_func {
             match entry_func.call(&mut instance_guard.store, ()) {
-                Ok(exit_code) => ExecutionResult {
-                    success: exit_code == 0,
-                    output: Some(vec![]), // In real implementation, capture stdout
-                    error: if exit_code != 0 {
-                        Some(format!("Exit code: {}", exit_code))
-                    } else {
-                        None
-                    },
+                Ok(return_value) => ExecutionResult {
+                    success: true,
+                    output: Some(return_value.to_string().into_bytes()), // Return the actual value
+                    error: None,
                     execution_time: start_time.elapsed(),
                     memory_used: instance_guard.store.data().memory_used,
                 },
